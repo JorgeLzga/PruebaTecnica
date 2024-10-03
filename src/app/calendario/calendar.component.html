@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <h2 class="text-center">Calendario de Entregas - Septiembre 2024</h2>
+  <table class="table table-bordered text-center mx-auto">
+    <thead>
+      <tr>
+        <th>Lunes</th>
+        <th>Martes</th>
+        <th>Miércoles</th>
+        <th>Jueves</th>
+        <th>Viernes</th>
+        <th>Sábado</th>
+        <th>Domingo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of [].constructor(5); let weekIndex = index">
+        <td *ngFor="let day of days.slice(weekIndex * 7, (weekIndex + 1) * 7)">
+          <button *ngIf="day.date" (click)="selectDay(day)" class="btn btn-primary m-1">
+            {{ day.date.getDate() }}
+          </button>
+          <span *ngIf="!day.date"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="selectedDay" class="mt-4">
+    <h5>Horarios para el {{ selectedDay.date.toDateString() }}</h5>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let hour of ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']">
+          <td>{{ hour }}</td>
+          <td [ngClass]="isOccupied(hour) ? 'table-danger' : 'table-success'">
+            {{ isOccupied(hour) ? 'Ocupado' : 'Disponible' }}
+          </td>
+          <td>
+            <button *ngIf="!isOccupied(hour)" (click)="selectHour(hour)" class="btn btn-success">
+              Reservar
+            </button>
+            <span *ngIf="isOccupied(hour)" class="text-muted">No disponible</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="selectedHour" class="mt-4">
+      <h6>Ingresa tus datos para confirmar la reserva:</h6>
+      <form (ngSubmit)="confirmReservation()" #reservationForm="ngForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nombre:</label>
+          <input type="text" id="name" [(ngModel)]="reservationDetails.name" name="name" required class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo Electrónico:</label>
+          <input type="email" id="email" [(ngModel)]="reservationDetails.email" name="email" required class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="phone" class="form-label">Teléfono:</label>
+          <input type="tel" id="phone" [(ngModel)]="reservationDetails.phone" name="phone" required class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+      </form>
+    </div>
+  </div>
+</div>
